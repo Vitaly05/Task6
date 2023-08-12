@@ -12,41 +12,40 @@ namespace Task6.Repositories
             this.context = context;
         }
 
-        public async Task AddMessageAsync(Message message)
+        public async Task AddMessageAsync(string message, IEnumerable<string> tags)
         {
-            //var messageTagsNames = new List<string>(message.Tags.Select(t => t.Name));
-            //message.Tags.Clear();
-            //await addTagToMessage(message, messageTagsNames);
-            message.Tags = await getTagsAsync(message.Tags.Select(t => t.Name));
-            await context.Messages.AddAsync(message);
-            await context.SaveChangesAsync();
-        }
-
-        async public Task AddNewTagsAsync(IEnumerable<Tag> tags)
-        {
-            foreach (var tag in tags)
-                if (!context.Tags.Any(t => t.Name == tag.Name))
-                    await context.AddAsync(tag);
-            await context.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<Message>> GetMessagesAsync(IEnumerable<Tag> tags)
-        {
-            List<Message> messages = new List<Message>();
-            List<Tag> usedTags = await getTagsAsync(tags.Select(t => t.Name));
-            foreach (var message in context.Messages.Include(m => m.Tags))
+            var newMessage = new Message()
             {
-                if (message.Tags.Count() == 0 || message.Tags.Intersect(usedTags).Any())
-                    messages.Add(message);
-            }
+                Data = message,
+                Tags = await getTagsAsync(tags)
+            };
+            await context.Messages.AddAsync(newMessage);
+            await context.SaveChangesAsync();
+        }
+
+        async public Task AddNewTagsAsync(IEnumerable<string> tagsNames)
+        {
+            foreach (var tagName in tagsNames)
+                if (!context.Tags.Any(t => t.Name == tagName))
+                    await context.AddAsync(new Tag() { Name = tagName });
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetMessagesAsync(IEnumerable<string> tagsNames)
+        {
+            List<Tag> usedTags = await getTagsAsync(tagsNames);
+            List<Message> messages = getMessages(usedTags);
             messages.ForEach(m => (m.Tags as List<Tag>).ForEach(t => t.Messages.Clear()));
             return messages;
         }
 
-        private async Task addTagToMessage(Message message, IEnumerable<string> tagsNames)
+        private List<Message> getMessages(IEnumerable<Tag> tags)
         {
-            foreach (var tagName in tagsNames)
-                message.Tags.Add(await getTagAsync(tagName));
+            List<Message> messages = new List<Message>();
+            foreach (var message in context.Messages.Include(m => m.Tags))
+                if (message.Tags.Count() == 0 || message.Tags.Intersect(tags).Any())
+                    messages.Add(message);
+            return messages;
         }
 
         private async Task<List<Tag>> getTagsAsync(IEnumerable<string> tagsNames)
@@ -57,6 +56,7 @@ namespace Task6.Repositories
             return tags;
         }
 
-        private async Task<Tag> getTagAsync(string tagName) => await context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
+        private async Task<Tag> getTagAsync(string tagName) => 
+            await context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
     }
 }

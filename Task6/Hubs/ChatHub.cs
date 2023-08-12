@@ -13,16 +13,14 @@ namespace Task6.Hubs
             this.chatRepository = chatRepository;
         }
 
-        public async Task Send(Message message)
+        public async Task Send(string message, IEnumerable<string> tags)
         {
-            await chatRepository.AddNewTagsAsync(message.Tags);
-            await chatRepository.AddMessageAsync(message);
+            await chatRepository.AddNewTagsAsync(tags);
+            await chatRepository.AddMessageAsync(message, tags);
             await Clients.Others.SendAsync("NewMessage");
-            await Clients.All.SendAsync("ff");
-            await Clients.All.SendAsync("aa");
         }
 
-        public async Task GetMessages(IEnumerable<Tag> tags)
+        public async Task GetMessages(IEnumerable<string> tags)
         {
             await Clients.Caller.SendAsync("GetMessages", await chatRepository.GetMessagesAsync(tags));
         }

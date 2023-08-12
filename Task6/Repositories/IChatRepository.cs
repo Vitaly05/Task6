@@ -4,10 +4,10 @@ namespace Task6.Repositories
 {
     public interface IChatRepository
     {
-        Task AddNewTagsAsync(IEnumerable<Tag> tags);
+        Task AddNewTagsAsync(IEnumerable<string> tagsNames);
 
-        Task AddMessageAsync(Message message);
+        Task AddMessageAsync(string message, IEnumerable<string> tags);
 
-        Task<IEnumerable<Message>> GetMessagesAsync(IEnumerable<Tag> tags);
+        Task<IEnumerable<Message>> GetMessagesAsync(IEnumerable<string> tagsNames);
     }
 }

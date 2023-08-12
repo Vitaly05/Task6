@@ -7,7 +7,7 @@
     const hubConnection = new signalR.HubConnectionBuilder().withUrl('/chat').build()
     
     hubConnection.on('NewMessage', function() {
-        hubConnection.invoke('GetMessages', getTags(tagsDisplay))
+        hubConnection.invoke('GetMessages', tagsDisplay.tags())
     })
 
     hubConnection.on('GetMessages', function(messages) {
@@ -16,19 +16,16 @@
     })
     
     chat.options.onSend = function(msg) {
-        hubConnection.invoke('Send', {
-            data: msg.text,
-            tags: getTags(messageTags)
-        })
+        hubConnection.invoke('Send', msg.text, messageTags.tags())
     }
 
     tagsDisplay.options.onTagAdd = function() {
         $('.tags-display-panel').scrollTop($('.tags-display-panel').children().height())
-        hubConnection.invoke('GetMessages', getTags(tagsDisplay))
+        hubConnection.invoke('GetMessages', tagsDisplay.tags())
     }
 
     tagsDisplay.options.onTagRemove = function() {
-        hubConnection.invoke('GetMessages', getTags(tagsDisplay))
+        hubConnection.invoke('GetMessages', tagsDisplay.tags())
     }
 
     tagInput.options.onBeforeTagAdd = function(val) {
@@ -39,7 +36,7 @@
     
     await hubConnection.start()
 
-    hubConnection.invoke('GetMessages', getTags(tagsDisplay))
+    hubConnection.invoke('GetMessages', tagsDisplay.tags())
 })
 
 function getTags(source) {
