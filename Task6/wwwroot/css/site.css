@@ -1,0 +1,54 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: auto;
+    height: 100vh;
+}
+
+.message-avatar {
+    display: none !important;
+}
+.message-text {
+    padding: 10px 10px !important;
+}
+
+#chat-panel {
+    height: 75vh;
+    column-gap: 10px;
+}
+
+#tags-panel {
+    width: 30%;
+    height: 100%;
+}
+
+.tags-display-panel {
+    height: 80%;
+    overflow-y: auto;
+}
+
+.tag-input {
+    min-height: 100%;
+}
+
+#tags-display ~ .input-wrapper {
+    display: none !important; 
+}
+.cursor-default {
+    cursor: default !important;
+}
+
+.chat-area {
+    height: 100%;
+    width: 70%;
+}
+
+#chat {
+    height: 93% !important;
+}
+
+.chat-area .text {
+    min-width: 130px;
+}
