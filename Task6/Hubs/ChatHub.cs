@@ -30,8 +30,8 @@ namespace Task6.Hubs
         public async Task Send(string message, IEnumerable<string> tags)
         {
             await addNewTagsAsync(tags);
-            await chatRepository.AddMessageAsync(message, tags);
-            await sendMessageToOthersAsync(message, tags);
+            var newMessage = await chatRepository.AddMessageAsync(message, tags);
+            await sendMessageToOthersAsync(newMessage, tags);
         }
 
         public async Task GetMessages(IEnumerable<string> tags)
@@ -62,7 +62,7 @@ namespace Task6.Hubs
             if (hasNewTag) await Clients.All.SendAsync("Tags", await chatRepository.GetAllTagsAsync());
         }
 
-        private async Task sendMessageToOthersAsync(string message, IEnumerable<string> tags)
+        private async Task sendMessageToOthersAsync(Message message, IEnumerable<string> tags)
         {
             var ids = connections.Where(c => c.ConnectionId != Context.ConnectionId && c.HasTag(tags))
                 .Select(c => c.ConnectionId);

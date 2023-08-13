@@ -8,7 +8,7 @@ namespace Task6.Repositories
 
         Task<IEnumerable<string>> GetAllTagsAsync();
 
-        Task AddMessageAsync(string message, IEnumerable<string> tags);
+        Task<Message> AddMessageAsync(string message, IEnumerable<string> tags);
 
         Task<IEnumerable<Message>> GetMessagesAsync(IEnumerable<string> tagsNames);
     }

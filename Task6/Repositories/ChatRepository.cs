@@ -12,7 +12,7 @@ namespace Task6.Repositories
             this.context = context;
         }
 
-        public async Task AddMessageAsync(string message, IEnumerable<string> tags)
+        public async Task<Message> AddMessageAsync(string message, IEnumerable<string> tags)
         {
             var newMessage = new Message()
             {
@@ -21,6 +21,8 @@ namespace Task6.Repositories
             };
             await context.Messages.AddAsync(newMessage);
             await context.SaveChangesAsync();
+            (newMessage.Tags as List<Tag>).ForEach(t => t.Messages.Clear());
+            return newMessage;
         }
 
         async public Task<bool> AddNewTagsAsync(IEnumerable<string> tagsNames)

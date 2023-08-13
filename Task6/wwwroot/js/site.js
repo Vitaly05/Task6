@@ -7,11 +7,8 @@
     const hubConnection = new signalR.HubConnectionBuilder().withUrl('/chat').build()
     
     hubConnection.on('NewMessage', function(message) {
-        chat.add({
-            text: message,
-            time: 0,
-            position: 'left'
-        })
+        chat.add(convertMessageToObject(message))
+        addTagsHints([message])
     })
 
     hubConnection.on('GetMessages', function(messages) {
@@ -78,7 +75,6 @@
 })
 
 function checkWindowWidth() {
-    console.log($(window).width())
     if ($(window).width() < 768) {
         $('#tags-panel').hide()
     } else {
