@@ -17,14 +17,22 @@
     hubConnection.on('GetMessages', function(messages) {
         chat.clear()
         chat.addMessages(convertMessagesToObject(messages))
+        $('.messages').stop()
+    })
+
+    hubConnection.on('Tags', function(tags) {
+        tagInput.setAutocompleteList(tags)
+        messageTags.setAutocompleteList(tags)
     })
     
     chat.options.onSend = function(msg) {
         hubConnection.invoke('Send', msg.text, messageTags.tags())
     }
 
-    tagsDisplay.options.onTagAdd = function() {
+    tagsDisplay.options.onTagAdd = function(_, val) {
         $('.tags-display-panel').scrollTop($('.tags-display-panel').children().height())
+        hubConnection.invoke('AddTag', val)
+        hubConnection.invoke('GetMessages', tagsDisplay.tags())
     }
 
     tagsDisplay.options.onTagRemove = function() {
@@ -37,12 +45,14 @@
     }
 
     tagInput.options.onBeforeTagAdd = function(val) {
-        $('#tags-panel').scrollTop($('#tags-panel').children().height())
         if (tagsDisplay.tags().includes(val)) return false
         tagsDisplay._addTag(val)
-        hubConnection.invoke('AddTag', val)
         return false
     }
+
+    $('.tags-display .input-clear-button').click(function() {
+        hubConnection.invoke('GetMessages', [])
+    })
     
     await hubConnection.start()
 

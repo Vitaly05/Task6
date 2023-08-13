@@ -29,16 +29,19 @@ namespace Task6.Hubs
 
         public async Task Send(string message, IEnumerable<string> tags)
         {
-            await chatRepository.AddNewTagsAsync(tags);
+            await addNewTagsAsync(tags);
             await chatRepository.AddMessageAsync(message, tags);
-            var ids = connections.Where(c => c.ConnectionId != Context.ConnectionId && c.HasTag(tags))
-                .Select(c => c.ConnectionId);
-            await Clients.Clients(ids).SendAsync("NewMessage", message);
+            await sendMessageToOthersAsync(message, tags);
         }
 
         public async Task GetMessages(IEnumerable<string> tags)
         {
             await Clients.Caller.SendAsync("GetMessages", await chatRepository.GetMessagesAsync(tags));
+        }
+
+        public async Task GetTags()
+        {
+            await Clients.Caller.SendAsync("Tags", await chatRepository.GetAllTagsAsync());
         }
 
         public void AddTag(string tagName)
@@ -52,5 +55,18 @@ namespace Task6.Hubs
         }
 
         private Connection getCurrentConnection() => connections.FirstOrDefault(c => c.ConnectionId == Context.ConnectionId);
+
+        private async Task addNewTagsAsync(IEnumerable<string> tags)
+        {
+            var hasNewTag = await chatRepository.AddNewTagsAsync(tags);
+            if (hasNewTag) await Clients.All.SendAsync("Tags", await chatRepository.GetAllTagsAsync());
+        }
+
+        private async Task sendMessageToOthersAsync(string message, IEnumerable<string> tags)
+        {
+            var ids = connections.Where(c => c.ConnectionId != Context.ConnectionId && c.HasTag(tags))
+                .Select(c => c.ConnectionId);
+            await Clients.Clients(ids).SendAsync("NewMessage", message);
+        }
     }
 }

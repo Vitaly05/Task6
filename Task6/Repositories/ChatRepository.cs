@@ -23,13 +23,20 @@ namespace Task6.Repositories
             await context.SaveChangesAsync();
         }
 
-        async public Task AddNewTagsAsync(IEnumerable<string> tagsNames)
+        async public Task<bool> AddNewTagsAsync(IEnumerable<string> tagsNames)
         {
+            bool hasNewTag = false;
             foreach (var tagName in tagsNames)
                 if (!context.Tags.Any(t => t.Name == tagName))
+                {
                     await context.AddAsync(new Tag() { Name = tagName });
-            await context.SaveChangesAsync();
+                    hasNewTag = true;
+                }
+            if (hasNewTag) await context.SaveChangesAsync();
+            return hasNewTag;
         }
+
+        public async Task<IEnumerable<string>> GetAllTagsAsync() => await context.Tags.Select(t => t.Name).ToListAsync();
 
         public async Task<IEnumerable<Message>> GetMessagesAsync(IEnumerable<string> tagsNames)
         {
