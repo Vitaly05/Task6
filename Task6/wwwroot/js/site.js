@@ -68,9 +68,8 @@
         $('#tags-panel').toggle()
     })
 
-    f()
-    
-    $(window).resize(f)
+    checkWindowWidth()
+    $(window).resize(checkWindowWidth)
     
     await hubConnection.start()
 
@@ -78,7 +77,7 @@
     hubConnection.invoke('GetTags')
 })
 
-function f() {
+function checkWindowWidth() {
     console.log($(window).width())
     if ($(window).width() < 768) {
         $('#tags-panel').hide()
