@@ -52,3 +52,11 @@ body {
 .chat-area .text {
     min-width: 130px;
 }
+
+.message {
+    padding-top: 6px;
+}
+
+.badge:hover {
+    cursor: default;
+}

@@ -18,6 +18,7 @@
         chat.clear()
         chat.addMessages(convertMessagesToObject(messages))
         $('.messages').stop()
+        addTagsHints(messages)
     })
 
     hubConnection.on('Tags', function(tags) {
@@ -74,8 +75,22 @@ function convertMessagesToObject(messages) {
 
 function convertMessageToObject(message) {
     return {
+        id: message.id,
         text: message.data,
         time: 0,
         position: 'left'
     }
+}
+
+function addTagsHints(messages) {
+    messages.forEach(message => {
+        if (message.tags.length > 0) {
+            $(`.message[id="${message.id}"] .message-text `).append(`
+                <span class="badge bg-green fg-white" data-role="hint" data-hint-position="right" 
+                    data-cls-hint="bg-cyan fg-white drop-shadow" 
+                    data-hint-text="${message.tags.map(t => `#${t.name}`).join(' ')}">
+                    ${message.tags.length}
+                </span>`)
+        }
+    })
 }
