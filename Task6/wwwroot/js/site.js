@@ -25,7 +25,6 @@
 
     tagsDisplay.options.onTagAdd = function() {
         $('.tags-display-panel').scrollTop($('.tags-display-panel').children().height())
-        //hubConnection.invoke('GetMessages', tagsDisplay.tags())
     }
 
     tagsDisplay.options.onTagRemove = function() {
@@ -39,6 +38,7 @@
 
     tagInput.options.onBeforeTagAdd = function(val) {
         $('#tags-panel').scrollTop($('#tags-panel').children().height())
+        if (tagsDisplay.tags().includes(val)) return false
         tagsDisplay._addTag(val)
         hubConnection.invoke('AddTag', val)
         return false
@@ -47,6 +47,7 @@
     await hubConnection.start()
 
     hubConnection.invoke('GetMessages', tagsDisplay.tags())
+    hubConnection.invoke('GetTags')
 })
 
 function getTags(source) {
