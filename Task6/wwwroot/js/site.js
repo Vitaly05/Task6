@@ -50,6 +50,10 @@
         tagsDisplay._addTag(val)
         return false
     }
+    messageTags.options.onBeforeTagAdd = function(val) {
+        if (messageTags.tags().includes(val)) return false
+        return true
+    }
 
     $('.tags-display .input-clear-button').click(function() {
         hubConnection.invoke('GetMessages', [])
