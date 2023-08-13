@@ -7,6 +7,10 @@ body {
     height: 100vh;
 }
 
+.flex {
+    display: flex;
+}
+
 .message-avatar {
     display: none !important;
 }
@@ -15,13 +19,12 @@ body {
 }
 
 #chat-panel {
-    height: 75vh;
-    column-gap: 10px;
+    gap: 10px;
 }
 
 #tags-panel {
-    width: 30%;
     height: 100%;
+    min-height: 50vh;
 }
 
 .tags-display-panel {
@@ -42,7 +45,6 @@ body {
 
 .chat-area {
     height: 100%;
-    width: 70%;
 }
 
 #chat {

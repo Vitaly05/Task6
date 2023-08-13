@@ -58,12 +58,34 @@
     $('.tags-display .input-clear-button').click(function() {
         hubConnection.invoke('GetMessages', [])
     })
+
+    $('#show-tags-button').click(function() {
+        if ($('#tags-panel').css('display') === 'none') {
+            $(this).text("Hide your tags")
+        } else {
+            $(this).text("Show your tags")
+        }
+        $('#tags-panel').toggle()
+    })
+
+    f()
+    
+    $(window).resize(f)
     
     await hubConnection.start()
 
     hubConnection.invoke('GetMessages', tagsDisplay.tags())
     hubConnection.invoke('GetTags')
 })
+
+function f() {
+    console.log($(window).width())
+    if ($(window).width() < 768) {
+        $('#tags-panel').hide()
+    } else {
+        $('#tags-panel').show()
+    }
+}
 
 function getTags(source) {
     const tags = []

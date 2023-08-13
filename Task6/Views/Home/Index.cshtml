@@ -1,16 +1,17 @@
-﻿<div class="d-flex w-100" id="chat-panel">
-    <div id="tags-panel" class="d-flex flex-column flex-justify-between">
-        <div class="text-center text-leader2">Enabled tags:</div>
+﻿<div class="d-flex w-100 flex-column-r flex-row-md h-100 h-75-md" id="chat-panel">
+    <button id="show-tags-button" class="button d-block d-none-md flex-self-center">Show your tags</button>
+    <div id="tags-panel" class="flex flex-column flex-justify-between w-100 w-25-md">
+        <div class="text-center">Enabled tags:</div>
         <div class="tags-display-panel">
             <input data-role="taginput" id="tags-display" class="d-flex flex-column flex-align-start cursor-default tags-display" data-random-color="true" autocomplete="off" />
         </div>
-        <div class="text-center text-leader2">New tag:</div>
+        <div class="text-center">New tag:</div>
         <div class="tags-input-panel">
             <input data-role="taginput" id="tags-input" class="input-small" data-autocomplete="" />
         </div>
     </div>
 
-    <div class="chat-area d-flex flex-column flex-justify-between">
+    <div class="chat-area w-100 w-75-md d-flex flex-column flex-justify-between">
         <div id="chat" data-role="chat"
             data-cls-name="d-none" 
             data-cls-time="d-none">
